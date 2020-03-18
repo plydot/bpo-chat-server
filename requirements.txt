@@ -1,0 +1,8 @@
+psycopg2
+Django==2.2.4
+bcrypt
+google-api-python-client==1.4.1
+rs-django-jet
+feedparser
+Pillow
+requests
