@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
 from api.views import RegistrationViewSet
@@ -24,7 +25,13 @@ urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
-    path('api/register/', RegistrationViewSet.as_view({'post': 'create'}), name='api_user_register'),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+]
+
+router = DefaultRouter()
+router.register('api/auth', RegistrationViewSet)
+
+urlpatterns += [
+    url(r'^', include(router.urls))
 ]
