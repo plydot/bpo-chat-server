@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
-from api.views import RegistrationViewSet
+from api.views import RegistrationViewSet, UsersViewSet
 
 urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),
@@ -31,6 +31,7 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register('api/auth', RegistrationViewSet)
+router.register("api/users", UsersViewSet)
 
 urlpatterns += [
     url(r'^', include(router.urls))

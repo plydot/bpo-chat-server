@@ -11,6 +11,7 @@ from chat.models import Users
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
+    lookup_field = 'phone'
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
@@ -20,6 +21,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
+    authentication_classes = []
     lookup_field = 'phone'
 
     def create(self, request, *args, **kwargs):
@@ -41,11 +43,11 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         return Response({'data': data, 'errors': errors}, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
-        available = False
+        available = True
         try:
             instance = self.get_object()
             if instance is None:
                 raise Http404
         except Http404:
-            available = True
+            available = False
         return Response(available, status=status.HTTP_200_OK)
