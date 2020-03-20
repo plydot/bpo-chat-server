@@ -8,8 +8,10 @@ from chat.models import Users
 
 class AuthBackend(ModelBackend):
 
-    def authenticate(self, request, phone=None, password=None, **kwargs):
+    def authenticate(self, request, phone=None, password=None, username=None, **kwargs):
         try:
+            if phone is None:
+                phone = username
             user = Users.objects.get(phone=phone)
             if user.check_password(password):
                 return user
