@@ -56,6 +56,7 @@ def update_sio(sid, message):
 
 @sio.event
 def send_message(sid, data):
+    print(data)
     phone = data['recipient']
     message = data['message']
     try:
