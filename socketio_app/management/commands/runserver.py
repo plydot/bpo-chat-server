@@ -14,10 +14,10 @@ class Command(RunCommand):
             import eventlet
             import eventlet.wsgi
             from bpo.wsgi import application
-            eventlet.wsgi.server(eventlet.listen(('127.0.0.1', 5000)), application)
+            eventlet.wsgi.server(eventlet.listen(('127.0.0.1', 8052)), application)
         elif sio.async_mode == 'gevent_uwsgi':
             print('Start the application through the uwsgi server. Example:')
-            print('uwsgi --http :5000 --gevent 1000 --http-websockets '
+            print('uwsgi --http :8052 --gevent 1000 --http-websockets '
                   '--master --wsgi-file django_example/wsgi.py --callable '
                   'application')
         else:
