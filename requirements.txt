@@ -1,8 +1,13 @@
-django==3.0.1
+asgiref==3.2.3
+Django==3.0.1
+dnspython==1.16.0
 enum-compat==0.0.3
 eventlet==0.25.1
 greenlet==0.4.15
-python-engineio
-python-socketio
+monotonic==1.5
+psycopg2==2.8.4
+python-engineio==3.11.2
+python-socketio==4.4.0
 pytz==2019.3
 six==1.14.0
+sqlparse==0.3.1

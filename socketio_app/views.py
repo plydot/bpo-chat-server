@@ -44,6 +44,7 @@ def update_sio(sid, message):
     try:
         phone = message['phone']
         user = Users.objects.get(phone=phone)
+        print(user)
         user.socket_sio = sid
         user.save()
         sio.emit("is_online", user.socket_sio, room=sid)
