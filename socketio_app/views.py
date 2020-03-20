@@ -1,6 +1,10 @@
 # set async_mode to 'threading', 'eventlet', 'gevent' or 'gevent_uwsgi' to
 # force a mode else, the best mode is selected automatically from what's
 # installed
+from django.core.exceptions import ObjectDoesNotExist
+
+from socketio_app.models import Users
+
 async_mode = None
 
 import os
@@ -30,15 +34,43 @@ def background_thread():
 
 
 @sio.event
-def my_event(sid, message):
-    sio.emit('my_response', {'data': message['data']}, room=sid)
-    print({'data': message['data']})
+def is_online(sid, message):
+    print(message)
 
 
 @sio.event
-def my_broadcast_event(sid, message):
-    sio.emit('my_response', {'data': message['data']})
+def update_sio(sid, message):
+    print(message)
+    try:
+        phone = message['phone']
+        user = Users.objects.get(phone=phone)
+        user.socket_sio = sid
+        user.save()
+        sio.emit("is_online", user.socket_sio, room=sid)
+    except ObjectDoesNotExist:
+        sio.emit('is_online', None, room=sid)
+
+
+@sio.event
+def send_message(sid, data):
+    phone = data['recipient']
+    message = data['message']
+    try:
+        user = Users.objects.get(phone=phone)
+        if user.socket_sio is not None:
+            sio.emit('message_reply', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
+            sio.emit('start_dialog', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
+    except ObjectDoesNotExist:
+        pass
+
+
+@sio.event
+def message_reply(sid, message):
     print({'data': message['data']})
+
+@sio.event
+def start_dialog(sid, message):
+    pass
 
 
 @sio.event
@@ -76,7 +108,7 @@ def disconnect_request(sid):
 
 
 @sio.event
-def connect(sid, environ):
+def connect(sid, environment):
     sio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
     print('connected ' + sid)
 
