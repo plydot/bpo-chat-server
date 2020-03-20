@@ -3,6 +3,7 @@ from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from api.serializers import UsersSerializer, RegistrationSerializer
 from chat.models import Users
@@ -11,10 +12,17 @@ from chat.models import Users
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
+    authentication_classes = [JWTAuthentication,]
     lookup_field = 'phone'
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        q = self.request.query_params.get("q")
+        if q == '1':
+            users = Users.objects.filter(phone__in=request.data)
+            serializer = self.get_serializer(users, many=True)
+            return Response(serializer.data)
+        else:
+            return super().create(request, *args, **kwargs)
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):

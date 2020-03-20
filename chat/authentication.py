@@ -1,7 +1,4 @@
-from django.contrib.auth import authenticate
 from django.contrib.auth.backends import ModelBackend
-from rest_framework.exceptions import PermissionDenied
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from chat.models import Users
 
