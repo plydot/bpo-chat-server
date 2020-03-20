@@ -1,6 +1,8 @@
 # set async_mode to 'threading', 'eventlet', 'gevent' or 'gevent_uwsgi' to
 # force a mode else, the best mode is selected automatically from what's
 # installed
+import uuid
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from socketio_app.models import Users
@@ -59,8 +61,9 @@ def send_message(sid, data):
     try:
         user = Users.objects.get(phone=phone)
         if user.socket_sio is not None:
-            sio.emit('message_reply', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
-            # sio.emit('start_dialog', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
+            id = uuid.uuid4().hex
+            sio.emit('message_reply', '{}__SEP__{}__SEP__{}'.format(message, phone, id), room=user.socket_sio)
+            sio.emit('start_dialog', '{}__SEP__{}__SEP__{}'.format(message, phone, id), room=user.socket_sio)
     except ObjectDoesNotExist:
         pass
 
