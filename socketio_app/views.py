@@ -60,7 +60,7 @@ def send_message(sid, data):
         user = Users.objects.get(phone=phone)
         if user.socket_sio is not None:
             sio.emit('message_reply', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
-            sio.emit('start_dialog', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
+            # sio.emit('start_dialog', '{}__SEP__{}'.format(message, phone), room=user.socket_sio)
     except ObjectDoesNotExist:
         pass
 
